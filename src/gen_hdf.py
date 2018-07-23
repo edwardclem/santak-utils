@@ -76,20 +76,22 @@ def run(args):
         #creating imgs group
 
         imgs_group = h5f.create_group("imgs")
+        imgs_group.attrs['count'] = len(imgs)
 
         #copying to hdf5
         for i, char_id in enumerate(char_ids):
-            ds = imgs_group.create_dataset(str(char_id), data=imgs[i])
-            ds.attrs['name'] = np.string_(unicodedata.name(chr(int(char_id))))
-            ds.attrs['desc'] = np.string_("")
+            ds = imgs_group.create_dataset(str(i), data=imgs[i])
+            ds.attrs['desc'] = np.string_(unicodedata.name(chr(int(char_id))))
+            ds.attrs['uchr'] = np.string_(str(char_id))
 
 
         contours_group = h5f.create_group("contours")
+        contours_group.attrs['count'] = len(contours)
 
         for i, char_id in enumerate(char_ids):
             ds = contours_group.create_dataset(str(char_id), data=contours[i])
-            ds.attrs['name'] = np.string_(unicodedata.name(chr(int(char_id))))
-            ds.attrs['desc'] = np.string_("")
+            ds.attrs['desc'] = np.string_(unicodedata.name(chr(int(char_id))))
+            ds.attrs['uchr'] = np.string_(str(char_id))
 
 
 

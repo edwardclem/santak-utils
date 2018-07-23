@@ -22,11 +22,11 @@ To use, run:
 
 # Generating HDF Data Archives
 
-gen_hdf.py performs edge detection on all images in a user-supplied folder, and reduces the corresponding contours via subsampling. Subsampling is performed by skipping edge points. File names must be valid decimal unicode code points, at least at this stage. The source images and output contours are saved in an hdf5 dataset with groups "/imgs" and "/contours".
+gen_hdf.py performs edge detection on all images in a user-supplied folder, and reduces the corresponding contours via subsampling. Subsampling is performed by skipping edge points. The source images and output contours are saved in an hdf5 dataset with groups "/imgs" and "/contours". Each group contains an attribute 'count', the total element count. Each dataset contains attributes "uchr", the decimal unicode code point, and "desc", a text description of the character. 
 
 To use, run:
 `gen_hdf.py [-h] [--imgs IMGS] [--skip SKIP] [--min MIN] [--out OUT]`
 
 #Example
 
-`pipeline.sh` contains example usage. 
+`pipeline.sh` contains example usage.
