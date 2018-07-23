@@ -1,11 +1,10 @@
 '''
 Generates an HDF5 file with the following top-level groups:
 
-All dataset names are the decimal unicode code points of the corresponding characters.
-All datasets contain the character name and description in metadata.
+gen_hdf.py performs edge detection on all images in a user-supplied folder, and reduces the corresponding contours via subsampling. Subsampling is performed by skipping edge points. Use of HDF5 features is limited due to OpenCV's limited HDF5 API. The unicode code points of each character are stored in a dataset in the root group named "unicode".
 
-imgs:
-contours:
+The source images and output contours are saved in datasets with groups "/imgs", "/contours" - dataset names are integer unicode code points. Text descriptions are found in dataset "/descs" with indices corresponding to the characters in "unicode".
+
 '''
 import numpy as np
 import cv2
@@ -74,24 +73,25 @@ def run(args):
 
     with h5py.File(args.out, 'w') as h5f:
         #creating imgs group
+        #converting to integer
+        char_ids = [int(id) for id in char_ids]
 
+        h5f.create_dataset('unicode', data=np.array(char_ids))
+
+        descs = [np.string_(unicodedata.name(chr(char_id))) for char_id in char_ids]
+
+        h5f.create_dataset("descs", (len(descs), ), dtype="S10", data=descs)
+
+        #creating images and contours groups
         imgs_group = h5f.create_group("imgs")
-        imgs_group.attrs['count'] = len(imgs)
-
         #copying to hdf5
         for i, char_id in enumerate(char_ids):
-            ds = imgs_group.create_dataset(str(i), data=imgs[i])
-            ds.attrs['desc'] = np.string_(unicodedata.name(chr(int(char_id))))
-            ds.attrs['uchr'] = np.string_(str(char_id))
-
+            ds = imgs_group.create_dataset(str(char_id), data=imgs[i])
 
         contours_group = h5f.create_group("contours")
-        contours_group.attrs['count'] = len(contours)
 
         for i, char_id in enumerate(char_ids):
             ds = contours_group.create_dataset(str(char_id), data=contours[i])
-            ds.attrs['desc'] = np.string_(unicodedata.name(chr(int(char_id))))
-            ds.attrs['uchr'] = np.string_(str(char_id))
 
 
 
