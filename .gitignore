@@ -6,6 +6,13 @@ __pycache__/
 # C extensions
 *.so
 
+#data
+rendered/
+#too big
+hdf/
+#not committing this until font copyright worked out
+resources/
+
 # Distribution / packaging
 .Python
 build/
